@@ -182,64 +182,9 @@ Data‑centric organisations that require **prompt encryption** and **regulatory
 
 ### Source Links  
 
-1. https://developer.nvidia.com/compute/h100/firmware  
-2. https://developer.nvidia.com/cuda-toolkit-12.1  
-3. https://developer.nvidia.com/tdx-sdk  
-4. https://developer.amd.com/amd-sev-nv  
-5. https://developer.nvidia.com/nvidia-hpe-confidential-containers-beta  
-6. https://developer.nvidia.com/cuFHE-beta  
-7. https://developer.nvidia.com/tensorRT-LLM-8.6  
-8. https://developer.nvidia.com/cudnn-8.9  
-9. https://developer.nvidia.com/cublas-12.2  
-10. https://developer.nvidia.com/cudnn-9.0  
-11. https://developer.nvidia.com/cuda-toolkit-13.0  
-12. https://developer.nvidia.com/tensorrt-9.0  
-13. https://developer.nvidia.com/gpu-operator-24.9.1  
-14. https://developer.nvidia.com/gpu-operator-24.10  
-15. https://developer.nvidia.com/nvidia-hpe-confidential-containers-ga  
-16. https://developer.intel.com/tdx-sdk  
-17. https://developer.intel.com/tdx-sdk-v3  
-18. https://developer.amd.com/amd-sev-nv-sdk  
-19. https://developer.amd.com/amd-sev-nv-sdk-ga  
-20. https://developer.fortanix.com/fortify-sgx-r  
-21. https://developer.zama.ai/confidential-blockchain-protocol  
-22. https://developer.zama.ai/cuFHE-1.0  
-23. https://github.com/NVIDIA/neMo  
-24. https://github.com/huggingface/transformers  
-25. https://github.com/nvidia/tensorrt-llm  
-26. https://developer.nvidia.com/triton-inference-server  
-27. https://developer.nvidia.com/nvidia-hpe-confidential-containers-beta  
-28. https://developer.nvidia.com/nvidia-hpe-confidential-containers-ga  
-29. https://developer.nvidia.com/epyc-tx-2-0  
-30. https://developer.nvidia.com/epyc-virtual-tpm  
-31. https://developer.nvidia.com/epyc-virtual-tpm-sdk  
-32. https://developer.nvidia.com/epyc-tx-2-0-firmware  
-33. https://developer.nvidia.com/epyc-tx-2-0-driver  
-34. https://developer.nvidia.com/epyc-tx-2-0-cuda-toolkit  
-35. https://developer.nvidia.com/epyc-tx-2-0-cudnn  
-36. https://developer.nvidia.com/epyc-tx-2-0-tensorrt  
-37. https://developer.nvidia.com/epyc-tx-2-0-confidential-containers  
-38. https://developer.nvidia.com/epyc-tx-2-0-mlperf  
-39. https://developer.nvidia.com/epyc-tx-2-0-sgx-r  
-40. https://developer.nvidia.com/epyc-tx-2-0-zkgpu  
-41. https://developer.nvidia.com/epyc-tx-2-0-mlflow  
-42. https://developer.nvidia.com/epyc-tx-2-0-fortanix  
-43. https://developer.nvidia.com/epyc-tx-2-0-fortanix-mlflow  
-44. https://developer.nvidia.com/epyc-tx-2-0-zama  
-45. https://developer.nvidia.com/epyc-tx-2-0-zama-confidential-blockchain  
-46. https://developer.nvidia.com/epyc-tx-2-0-zama-confidential-blockchain-mlflow  
-47. https://developer.nvidia.com/epyc-tx-2-0-zama-confidential-blockchain-mlflow-mlperf  
-48. https://developer.nvidia.com/epyc-tx-2-0-mlperf  
-49. https://developer.nvidia.com/epyc-tx-2-0-mlflow  
-50. https://developer.nvidia.com/epyc-tx-2-0-mlperf-mlflow  
-51. https://developer.nvidia.com/epyc-tx-2-0-mlperf-mlflow-zama-confidential-blockchain  
-52. https://developer.nvidia.com/epyc-tx-2-0-mlperf-mlflow-zama-confidential-blockchain-mlflow  
-53. https://developer.nvidia.com/epyc-tx-2-0-mlperf-mlflow-zama-confidential-blockchain-mlflow-mlperf  
-54. https://developer.nvidia.com/epyc-tx-2-0-mlperf-mlflow-zama-confidential-blockchain-mlflow-mlperf-mlflow  
-55. https://developer.nvidia.com/epyc-tx-2-0-mlperf-mlflow-zama-confidential-blockchain-mlflow-mlperf-mlflow-mlflow  
-56. https://developer.nvidia.com/epyc-tx-2-0-mlperf-mlflow-zama-confidential-blockchain-mlflow-mlperf-mlflow-mlflow-mlflow  
-57. https://developer.nvidia.com/epyc-tx-2-0-mlperf-mlflow-zama-confidential-blockchain-mlflow-mlperf-mlflow-mlflow-mlflow-mlflow  
-
+https://developer.nvidia.com/triton-inference-server
+https://github.com/nvidia/tensorrt-llm
+https://github.com/NVIDIA/neMo
 ---  
 
 *(All references are compiled from the latest NVIDIA, Intel, AMD, and open‑source security releases relevant to the Hopper/Blackwell families as of April 2024.)*
