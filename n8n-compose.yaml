@@ -1,0 +1,198 @@
+volumes:
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /n8n/postgres
+      o: bind
+  n8n_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /n8n/data
+      o: bind
+  redis_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /n8n/redis
+      o: bind
+
+networks:
+  n8n-network:
+    driver: bridge
+  
+services:
+  # Main n8n Instance - Handles UI, API, and triggers
+  n8n:
+    restart: always
+    image: docker.n8n.io/n8nio/n8n:latest
+    environment:
+      # Database Configuration
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=
+      - DB_POSTGRESDB_PASSWORD=
+      
+      # Queue Configuration
+      - EXECUTIONS_MODE=queue
+      - QUEUE_BULL_REDIS_HOST=redis
+      - QUEUE_BULL_REDIS_PORT=6379
+      - QUEUE_HEALTH_CHECK_ACTIVE=true
+      - N8N_RUNNERS_ENABLED=false
+      - OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS=true
+      - N8N_GIT_NODE_DISABLE_BARE_REPOS=true
+      
+      # Security and Encryption
+      - N8N_ENCRYPTION_KEY_FILE=/run/secrets/encryption_key
+      - N8N_SECURE_COOKIE=true
+      - N8N_SAMESITE_COOKIE=strict
+      
+      # Production Settings
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - N8N_PROXY_HOPS=1
+      - GENERIC_TIMEZONE=America/Chicago
+      
+      # Data Management
+      - N8N_DEFAULT_BINARY_DATA_MODE=filesystem
+      - EXECUTIONS_DATA_PRUNE=true
+      - EXECUTIONS_DATA_PRUNE_MAX_COUNT=10000
+      - EXECUTIONS_DATA_MAX_AGE=168
+      
+      # Security Hardening
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=true
+      - N8N_BLOCK_FILE_ACCESS_TO_N8N_FILES=true
+      - N8N_RESTRICT_FILE_ACCESS_TO=/data/files:/tmp
+      
+      # Performance
+      - NODE_OPTIONS=--max-old-space-size=4096
+      
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./files:/data/files
+    networks:
+      - n8n-network
+    secrets:
+      - encryption_key
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    container_name: n8n-main
+    ports:
+      - "127.0.0.1:5678:5678"
+
+  # Worker Instances - Execute workflows
+  n8n-worker:
+    restart: unless-stopped
+    image: docker.n8n.io/n8nio/n8n:latest
+    environment:
+      # Database Configuration
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=
+      - DB_POSTGRESDB_PASSWORD=
+      
+      # Queue Configuration
+      - EXECUTIONS_MODE=queue
+      - QUEUE_BULL_REDIS_HOST=redis
+      - QUEUE_BULL_REDIS_PORT=6379
+      - QUEUE_HEALTH_CHECK_ACTIVE=true
+      
+      # Security and Encryption
+      - N8N_ENCRYPTION_KEY_FILE=/run/secrets/encryption_key
+      - N8N_SECURE_COOKIE=true
+      - N8N_SAMESITE_COOKIE=strict
+      
+      # Production Settings
+      - N8N_HOST=
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=
+      - N8N_PROXY_HOPS=1
+      - GENERIC_TIMEZONE=America/Chicago
+      
+      # Data Management
+      - N8N_DEFAULT_BINARY_DATA_MODE=filesystem
+      - EXECUTIONS_DATA_PRUNE=true
+      - EXECUTIONS_DATA_PRUNE_MAX_COUNT=10000
+      - EXECUTIONS_DATA_MAX_AGE=168
+      
+      # Security Hardening
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=true
+      - N8N_BLOCK_FILE_ACCESS_TO_N8N_FILES=true
+      - N8N_RESTRICT_FILE_ACCESS_TO=/data/files:/tmp
+      
+      # Performance
+      - NODE_OPTIONS=--max-old-space-size=4096
+      - N8N_CONCURRENCY_PRODUCTION_LIMIT=10
+      - N8N_GRACEFUL_SHUTDOWN_TIMEOUT=300
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./files:/data/files
+    networks:
+      - n8n-network
+    secrets:
+      - encryption_key
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    command: ["worker", "--concurrency=10"]
+    deploy:
+      replicas: 2
+      
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    container_name: n8n-postgres
+    environment:
+      - POSTGRES_USER=
+      - POSTGRES_PASSWORD=
+      - POSTGRES_DB=n8n
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - n8n-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -h localhost -U postgres -d n8n']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    command: >
+      postgres
+      -c shared_buffers=256MB
+      -c effective_cache_size=1GB
+      -c maintenance_work_mem=64MB
+      -c max_connections=200
+
+  # Redis for Queue Management
+  redis:
+    image: redis:7-alpine
+    restart: always
+    container_name: n8n-redis
+    volumes:
+      - redis_data:/data
+      - ./config/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    networks:
+      - n8n-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', '--raw', 'incr', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+secrets:
+  encryption_key:
+    file: ./config/encryption_key.txt
