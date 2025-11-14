@@ -1,7 +1,7 @@
 
 # Executive Summary  
 
-This document outlines a comprehensive, AI‑driven strategy for building a **complete inventory of hardware, software, and agentic workflows** in a very large retail organization that currently relies on legacy monolithic stacks and lacks a formal labeling or governance system.  
+This document outlines a comprehensive, AI‑driven strategy for building a **complete inventory of hardware, software, and agentic workflows** in a very large organization that currently relies on legacy monolithic stacks and lacks a formal labeling or governance system.  
 Key outcomes are:  
 
 | Goal | Outcome | Owner | Time‑frame |
